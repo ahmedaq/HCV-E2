@@ -6,7 +6,7 @@
    <!--
 This HTML was auto-generated from MATLAB code.
 To make changes, update the MATLAB code and republish this document.
-      --><title>main</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-04-07"><meta name="DC.source" content="main.m"><style type="text/css">
+      --><title>main</title><meta name="generator" content="MATLAB 9.2"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-04-07"><meta name="DC.source" content="main.m"><style type="text/css">
 html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
 
 html { min-height:100%; margin-bottom:1px; }
@@ -66,10 +66,10 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 
 
 
-  </style></head><body><div class="content"><h1></h1><!--introduction--><p><b>Identifying immunologically-vulnerable regions of the HCV E2 glycoprotein and broadly neutralizing antibodies that target them</b></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up paths (of functions and data files required) and necessary parameters</a></li><li><a href="#2">1. Preprocessing of the PV sequence data downloaded from NCBI</a></li><li><a href="#3">2. Inferring the model representing the prevalence landscape of vp1 using ACE</a></li><li><a href="#6">3. Statistical validation of the inferred model</a></li><li><a href="#7">4. Experimental and clinical validations</a></li><li><a href="#12">Mapping of deltaE_i values on the available crystal structure of E2</a></li><li><a href="#13">Comparison of fitness costs associated with different regions targeted by HmAbs</a></li><li><a href="#14">Comparison of fitness costs associated with the binding residues of known HmAbs</a></li></ul></div><h2 id="1">Setting up paths (of functions and data files required) and necessary parameters</h2><pre class="codeinput">clear <span class="string">all</span>;close <span class="string">all</span>;clc
+  </style></head><body><div class="content"><h1></h1><!--introduction--><p><b>Identifying immunologically-vulnerable regions of the HCV E2 glycoprotein and broadly neutralizing antibodies that target them</b></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up paths (of functions and data files required) and necessary parameters</a></li><li><a href="#2">1. Preprocessing of the PV sequence data downloaded from NCBI</a></li><li><a href="#3">2. Inferring the model representing the prevalence landscape of vp1 using ACE</a></li><li><a href="#6">3. Statistical validation of the inferred model</a></li><li><a href="#7">4. Experimental and clinical validations</a></li><li><a href="#12">Mapping of fitness costs on the available crystal structure of E2</a></li><li><a href="#13">Comparison of fitness costs associated with different regions targeted by HmAbs</a></li><li><a href="#14">Comparison of fitness costs associated with the binding residues of known HmAbs</a></li></ul></div><h2 id="1">Setting up paths (of functions and data files required) and necessary parameters</h2><pre class="codeinput">clear <span class="string">all</span>;close <span class="string">all</span>;clc
 
 addpath <span class="string">data</span>
-<span class="comment">% addpath functions</span>
+addpath <span class="string">functions</span>
 
 run <span class="string">startup.m</span>
 
@@ -127,7 +127,7 @@ phi_cumulative(1) = phi_curr(1);
 
 <span class="comment">% Generating samples from the inferred model using a Markov Chain Monte Carlo (MCMC) method</span>
 
-<span class="keyword">if</span> run_scripts
+<span class="keyword">if</span> run_scripts == 1
     samples_MCMC = generate_samples_MCMC(H,msa_aa_ex,phi_curr,phi_cumulative,<span class="keyword">...</span>
         L_mut,L_ex,w);
 <span class="keyword">else</span>
@@ -142,7 +142,8 @@ model_statistical_validation(msa_aa_ex,w,samples_MCMC,phi_curr,L_mut)
     [p3_data, p3_sampler] = compute_triple_mutant_probability(msa_aa,<span class="keyword">...</span>
         phi_curr,mutant_order,ind_conserve,samples_MCMC,w);
 <span class="keyword">else</span>
-    load <span class="string">three_point_correlations_E2</span> <span class="string">p3_data</span> <span class="string">p3_sampler</span>
+    load <span class="string">three_point_correlations_E2_MSA.mat</span>
+    load <span class="string">three_point_correlations_E2_model.mat</span>
 <span class="keyword">end</span>
 plot_triple_mutant_probability(p3_data,p3_sampler)
 </pre><img vspace="5" hspace="5" src="main_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_03.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_04.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_05.png" style="width:560px;height:420px;" alt=""> <h2 id="7">4. Experimental and clinical validations</h2><p>In silico predicted energy vs in vitro replicative fitness measurements</p><pre class="codeinput"><span class="comment">% Energies predicted using the inferred model which incorporates the</span>
@@ -164,7 +165,7 @@ energy_vs_fitness(method, msa_aa_ex, msa_aa, phi_curr, mutant_order, <span class
     deltaE_i = compute_deltaE(samples_MCMC,msa_aa,phi_curr,mutant_order,<span class="keyword">...</span>
         ind_non_conserve,ind_conserve,H);
 <span class="keyword">else</span>
-    load <span class="string">data_fitnessCosts_E2_99900</span>
+    load <span class="string">data_fitnessCosts_E2_99900</span> <span class="string">dE2</span>
     deltaE_i = dE2;
 <span class="keyword">end</span>
 
@@ -177,21 +178,20 @@ P = 9.0e-03, Mann-Whitney test
 </pre><img vspace="5" hspace="5" src="main_09.png" style="width:560px;height:420px;" alt=""> <p>Comparison of fitness costs associated with T cell epitopes associated with spontaneous cleanrance</p><pre class="codeinput">compare_deltaE_Tcell_epitopes(deltaE_i,ind_non_conserve)
 </pre><pre class="codeoutput">
 P = 3.0e-02, Mann-Whitney test
-</pre><img vspace="5" hspace="5" src="main_10.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_11.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_12.png" style="width:560px;height:420px;" alt=""> <h2 id="12">Mapping of deltaE_i values on the available crystal structure of E2</h2><pre class="codeinput">mapping_crystal_structure_pymol(dE2)
+</pre><img vspace="5" hspace="5" src="main_10.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_11.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_12.png" style="width:560px;height:420px;" alt=""> <h2 id="12">Mapping of fitness costs on the available crystal structure of E2</h2><pre class="codeinput">mapping_crystal_structure_pymol(dE2)
 <span class="comment">% The above code generates the text file required in Pymol for creating the</span>
 <span class="comment">% heatmap. The code to run in Pymol is provided in "Pymol_code.docx" file.</span>
-</pre><pre class="codeoutput">Warning: File 'dE2_crystal_structure_4mwf_allatoms.txt' not found. 
-pymol_input_hvr1 =
-select HVR1, resi +384+385+386+387+388+389+390+391+392+393+394+395+396+397+398+399+400+401+402+403+404+405+406+407+408
+</pre><pre class="codeoutput">pymol_input_hvr1 =
+    'select HVR1, resi +384+385+386+387+388+389+390+391+392+393+394+395+396+397+398+399+400+401+402+403+404+405+406+407+408'
 pymol_input_cd81 =
-select cd81bs, resi +420+421+424+427+430+432+436+437+438+440+441+442+443+523+526+527+529+530+535+540+549+550+613+614+616+617+618
+    'select cd81bs, resi +420+421+424+427+430+432+436+437+438+440+441+442+443+523+526+527+529+530+535+540+549+550+613+614+616+617+618'
 pymol_input_HC331 =
-select HC331, resi +413+418+420
+    'select HC331, resi +413+418+420'
 pymol_input_CBH23 =
-select CBH23, resi +494+508+509+537+539+549+552+554+564+611+614+644
+    'select CBH23, resi +494+508+509+537+539+549+552+554+564+611+614+644'
 </pre><h2 id="13">Comparison of fitness costs associated with different regions targeted by HmAbs</h2><pre class="codeinput">compare_deltaE_antigenic_domains(deltaE_i)
 </pre><img vspace="5" hspace="5" src="main_13.png" style="width:560px;height:420px;" alt=""> <h2 id="14">Comparison of fitness costs associated with the binding residues of known HmAbs</h2><pre class="codeinput">compare_deltaE_HmAbs(deltaE_i)
-</pre><img vspace="5" hspace="5" src="main_14.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_15.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_16.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+</pre><img vspace="5" hspace="5" src="main_14.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_15.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_16.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2017a</a><br></p></div><!--
 ##### SOURCE BEGIN #####
 %%
 % *Identifying immunologically-vulnerable regions of the HCV E2 
@@ -201,7 +201,7 @@ select CBH23, resi +494+508+509+537+539+549+552+554+564+611+614+644
 clear all;close all;clc
 
 addpath data
-% addpath functions
+addpath functions
 
 run startup.m
 
@@ -264,7 +264,7 @@ end
 
 % Generating samples from the inferred model using a Markov Chain Monte Carlo (MCMC) method
 
-if run_scripts
+if run_scripts == 1
     samples_MCMC = generate_samples_MCMC(H,msa_aa_ex,phi_curr,phi_cumulative,...
         L_mut,L_ex,w);
 else
@@ -282,7 +282,8 @@ if run_scripts == 1
     [p3_data, p3_sampler] = compute_triple_mutant_probability(msa_aa,...
         phi_curr,mutant_order,ind_conserve,samples_MCMC,w);
 else
-    load three_point_correlations_E2 p3_data p3_sampler
+    load three_point_correlations_E2_MSA.mat
+    load three_point_correlations_E2_model.mat
 end
 plot_triple_mutant_probability(p3_data,p3_sampler)
 
@@ -315,7 +316,7 @@ if run_scripts==1
     deltaE_i = compute_deltaE(samples_MCMC,msa_aa,phi_curr,mutant_order,...
         ind_non_conserve,ind_conserve,H);
 else
-    load data_fitnessCosts_E2_99900
+    load data_fitnessCosts_E2_99900 dE2
     deltaE_i = dE2;
 end
 
@@ -333,7 +334,7 @@ compare_deltaE_exposed_buried_residues(deltaE_i)
 
 compare_deltaE_Tcell_epitopes(deltaE_i,ind_non_conserve)
 
-%% Mapping of deltaE_i values on the available crystal structure of E2
+%% Mapping of fitness costs on the available crystal structure of E2
 
 mapping_crystal_structure_pymol(dE2)
 % The above code generates the text file required in Pymol for creating the
