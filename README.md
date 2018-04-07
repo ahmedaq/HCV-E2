@@ -23,6 +23,7 @@ Ahmed A. Quadeer, Raymond H. Y. Louie, and Matthew R. McKay
     * Curve Fitting Toolbox
     * Parallel Computing Toolbox
     * MATLAB Distributed Computing Server
+    * MATLAB supported compiler installed for compiling C files
  
 2.  For inferring maximum-entropy model parameters:
     * Minimum probability flow method (MPF-BML), available at https://github.com/raymondlouie/MPF-BML 
