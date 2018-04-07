@@ -16,7 +16,7 @@ Identifying immunologically-vulnerable regions of the HCV E2 glycoprotein and br
 Ahmed A. Quadeer, Raymond H. Y. Louie, and Matthew R. McKay
 
 ## Requirements
-1.  A PC with MATLAB (preferrably v2017a or later) installed on it with the following additional toolboxes:
+1.  A PC with MATLAB (preferrably v2016b or later) installed on it with the following additional toolboxes:
     * Bioinformatics Toolbox
     * Communications System Toolbox
     * Statistics and Machine Learning Toolbox
