@@ -3,6 +3,7 @@
 *  [Details](#details)
 *  [Requirements](#requirements)
 *  [Usage](#usage)
+*  [Visualizing the step-by-step procedure and the corresponding output](#Visualizing the step-by-step procedure and the corresponding output)
 *  [Troubleshooting](#troubleshooting)
 
 ## Overview
@@ -34,8 +35,9 @@ Ahmed A. Quadeer, Raymond H. Y. Louie, and Matthew R. McKay
 1.  Open MATLAB
 2.  Run the script main.m 
 
-
-Note: To visualize the step-by-step procedure and the corresponding output, open the "main.html" file (in the "html" folder) in your browser.
+## Visualizing the step-by-step procedure and the corresponding output
+1. Download the html folder
+2. Open the "main.html" file in your browser
 
 ## Troubleshooting
 For any questions or comments, please email me at ahmedaq@gmail.com. 
