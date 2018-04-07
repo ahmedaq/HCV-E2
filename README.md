@@ -1,5 +1,12 @@
-## Software package
-This software package comprises scripts that include the main functions for reproducing the results presented in the paper titled " Identifying immunologically-vulnerable regions of the HCV E2 glycoprotein and broadly neutralizing antibodies that target them".
+## Table of Contents
+*  [Overview](#overview)
+*  [Details](#details)
+*  [Requirements](#requirements)
+*  [Usage](#usage)
+*  [Troubleshooting](#troubleshooting)
+
+## Overview
+This software package comprises scripts that include the main functions for reproducing the results presented in the paper titled "Identifying immunologically-vulnerable regions of the HCV E2 glycoprotein and broadly neutralizing antibodies that target them".
 
 
 ## Details
@@ -24,9 +31,11 @@ Ahmed A. Quadeer, Raymond H. Y. Louie, and Matthew R. McKay
     * Pymol, available at https://pymol.org/ 
 
 ## Usage
-
 1.  Open MATLAB
 2.  Run the script main.m 
 
 
 Note: To visualize the step-by-step procedure and the corresponding output, open the "main.html" file (in the "html" folder) in your browser.
+
+## Troubleshooting
+For any questions or comments, please email me at ahmedaq@gmail.com. 
