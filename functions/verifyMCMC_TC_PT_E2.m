@@ -65,6 +65,8 @@ aba=1;
 
 curr_vector = seedSeq;
 
+mex PT_final_chain_1.c
+
 % C code written by Muhammad Saqib Sohail
 [doublemutant,nosample,energyAll,numMutAll,Vall,samples_MCMC ]= PT_final_chain_1(random_array,...
     random_site_array,rand_amino_array,curr_vector,J_MINFLOW_mat_array,total_length,...
