@@ -1,0 +1,351 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2018-04-07"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1></h1><!--introduction--><p><b>Identifying immunologically-vulnerable regions of the HCV E2 glycoprotein and broadly neutralizing antibodies that target them</b></p><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1">Setting up paths (of functions and data files required) and necessary parameters</a></li><li><a href="#2">1. Preprocessing of the PV sequence data downloaded from NCBI</a></li><li><a href="#3">2. Inferring the model representing the prevalence landscape of vp1 using ACE</a></li><li><a href="#6">3. Statistical validation of the inferred model</a></li><li><a href="#7">4. Experimental and clinical validations</a></li><li><a href="#12">Mapping of deltaE_i values on the available crystal structure of E2</a></li><li><a href="#13">Comparison of fitness costs associated with different regions targeted by HmAbs</a></li><li><a href="#14">Comparison of fitness costs associated with the binding residues of known HmAbs</a></li></ul></div><h2 id="1">Setting up paths (of functions and data files required) and necessary parameters</h2><pre class="codeinput">clear <span class="string">all</span>;close <span class="string">all</span>;clc
+
+addpath <span class="string">data</span>
+<span class="comment">% addpath functions</span>
+
+run <span class="string">startup.m</span>
+
+set(0,<span class="string">'DefaultAxesFontName'</span>,<span class="string">'Arial'</span>)
+set(0,<span class="string">'DefaultTextFontName'</span>,<span class="string">'Arial'</span>)
+set(0,<span class="string">'DefaultAxesFontSize'</span>,10)
+set(0,<span class="string">'DefaultTextFontSize'</span>,10)
+
+run_scripts = 0;
+<span class="comment">%1 = yes, run the scripts. Note that this would take very long time...</span>
+<span class="comment">%0 = no, use saved data.</span>
+</pre><h2 id="2">1. Preprocessing of the PV sequence data downloaded from NCBI</h2><pre class="codeinput"><span class="comment">% HCV genotype 1a E2 sequences were downloaded from the Los Alamos National</span>
+<span class="comment">% Laboratory (LANL) HCV sequence database (https://hcv.lanl.gov;</span>
+<span class="comment">% accessed Sep. 25, 2017)</span>
+<span class="comment">% Header format: Name.PATid.Accession.Subtype.Country.SamplingYear</span>
+
+inputfile = <span class="string">'HCV_E2_aa_align_sequences_1909.fasta'</span>;
+[X,w] = preprocessing_data(inputfile);
+</pre><pre class="codeoutput">-----------------------------------------------------------------------------------
+Sequence data (MSA) statistics
+-----------------------------------------------------------------------------------
+Number of residues, L = 363
+Number of conserved residues = 11
+Number of mutating residues = 352
+Number of sequences = 3363
+Number of unique patients, N = 1298
+</pre><img vspace="5" hspace="5" src="main_01.png" style="width:560px;height:420px;" alt=""> <h2 id="3">2. Inferring the model representing the prevalence landscape of vp1 using ACE</h2><pre class="codeinput"><span class="comment">% Code for running MPF-BML is freely available at &lt;https://github.com/raymondlouie/MPF-BML&gt;.</span>
+</pre><p>MPF-BML input: MSA matrix "X" and weight vector "w".</p><p>MPF-BML output: Maximum entropy model parameters (fields and couplings)</p><pre class="codeinput">load <span class="string">MPF_BML_output.mat</span>
+
+msa_aa_ex = msa_bin;
+
+[~,L] = size(msa_aa);
+<span class="comment">% L is the total number of residues in E2</span>
+[~,L_ex] = size(msa_aa_ex);
+<span class="comment">% L_ex is the length of the Potts binary extended MSA</span>
+L_mut = length(ind_non_conserve);
+<span class="comment">% L_mut is the number of non-conserve (mutating) residues in E2</span>
+
+H = reshape(J_mat,L_ex,L_ex);
+<span class="comment">% Model-paramters matrix which consists of inferred fields on its diagonal</span>
+<span class="comment">% and inferred couplings on the upper triangular matrix.</span>
+
+phi_curr = num_mutants_combine_array;
+<span class="comment">%Number of mutants at each residue</span>
+
+mutant_order = amino_single_combine_array;
+<span class="comment">%Identity of mutants at each residue</span>
+
+phi_cumulative(1) = phi_curr(1);
+<span class="keyword">for</span> kk = 2:length(mutant_order)
+    phi_cumulative(kk) = sum(phi_curr(1:kk));
+<span class="keyword">end</span>
+<span class="comment">%Cumulative sum of the number of mutants at each residue</span>
+
+
+<span class="comment">% Generating samples from the inferred model using a Markov Chain Monte Carlo (MCMC) method</span>
+
+<span class="keyword">if</span> run_scripts
+    samples_MCMC = generate_samples_MCMC(H,msa_aa_ex,phi_curr,phi_cumulative,<span class="keyword">...</span>
+        L_mut,L_ex,w);
+<span class="keyword">else</span>
+    load <span class="string">samples_MCMC_E2_99900.mat</span>
+<span class="keyword">end</span>
+</pre><h2 id="6">3. Statistical validation of the inferred model</h2><pre class="codeinput"><span class="comment">% Single mutant probability, double mutant probability, and distribution of</span>
+<span class="comment">% the number of mutations</span>
+model_statistical_validation(msa_aa_ex,w,samples_MCMC,phi_curr,L_mut)
+
+<span class="comment">% Triple mutant probability</span>
+<span class="keyword">if</span> run_scripts == 1
+    [p3_data, p3_sampler] = compute_triple_mutant_probability(msa_aa,<span class="keyword">...</span>
+        phi_curr,mutant_order,ind_conserve,samples_MCMC,w);
+<span class="keyword">else</span>
+    load <span class="string">three_point_correlations_E2</span> <span class="string">p3_data</span> <span class="string">p3_sampler</span>
+<span class="keyword">end</span>
+plot_triple_mutant_probability(p3_data,p3_sampler)
+</pre><img vspace="5" hspace="5" src="main_02.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_03.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_04.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_05.png" style="width:560px;height:420px;" alt=""> <h2 id="7">4. Experimental and clinical validations</h2><p>In silico predicted energy vs in vitro replicative fitness measurements</p><pre class="codeinput"><span class="comment">% Energies predicted using the inferred model which incorporates the</span>
+<span class="comment">% effects of mutations at individual residues as well as  interactions</span>
+<span class="comment">% between mutations at different residues</span>
+
+method = 1;
+energy_vs_fitness(method, msa_aa_ex, msa_aa, phi_curr, mutant_order, <span class="keyword">...</span>
+    H, ind_non_conserve);
+
+<span class="comment">% Energy predicted using the model which incorporates only the effects of</span>
+<span class="comment">% mutations at individual residues</span>
+
+method = 2;
+energy_vs_fitness(method, msa_aa_ex, msa_aa, phi_curr, mutant_order, <span class="keyword">...</span>
+    H, ind_non_conserve);
+</pre><img vspace="5" hspace="5" src="main_06.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_07.png" style="width:560px;height:420px;" alt=""> <p>Comparison of fitness costs associated with known escape mutations and the mutations at other residues</p><pre class="codeinput"><span class="comment">% Computing deltaE_i first</span>
+<span class="keyword">if</span> run_scripts==1
+    deltaE_i = compute_deltaE(samples_MCMC,msa_aa,phi_curr,mutant_order,<span class="keyword">...</span>
+        ind_non_conserve,ind_conserve,H);
+<span class="keyword">else</span>
+    load <span class="string">data_fitnessCosts_E2_99900</span>
+    deltaE_i = dE2;
+<span class="keyword">end</span>
+
+compare_deltaE_known_escape_mutations(deltaE_i,L)
+</pre><pre class="codeoutput">
+P = 1.7e-10, Mann-Whitney test
+</pre><img vspace="5" hspace="5" src="main_08.png" style="width:560px;height:420px;" alt=""> <p>Comparison of fitness costs associated with mutations at exposed residues those at buried ones</p><pre class="codeinput">compare_deltaE_exposed_buried_residues(deltaE_i)
+</pre><pre class="codeoutput">
+P = 9.0e-03, Mann-Whitney test
+</pre><img vspace="5" hspace="5" src="main_09.png" style="width:560px;height:420px;" alt=""> <p>Comparison of fitness costs associated with T cell epitopes associated with spontaneous cleanrance</p><pre class="codeinput">compare_deltaE_Tcell_epitopes(deltaE_i,ind_non_conserve)
+</pre><pre class="codeoutput">
+P = 3.0e-02, Mann-Whitney test
+</pre><img vspace="5" hspace="5" src="main_10.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_11.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_12.png" style="width:560px;height:420px;" alt=""> <h2 id="12">Mapping of deltaE_i values on the available crystal structure of E2</h2><pre class="codeinput">mapping_crystal_structure_pymol(dE2)
+<span class="comment">% The above code generates the text file required in Pymol for creating the</span>
+<span class="comment">% heatmap. The code to run in Pymol is provided in "Pymol_code.docx" file.</span>
+</pre><pre class="codeoutput">Warning: File 'dE2_crystal_structure_4mwf_allatoms.txt' not found. 
+pymol_input_hvr1 =
+select HVR1, resi +384+385+386+387+388+389+390+391+392+393+394+395+396+397+398+399+400+401+402+403+404+405+406+407+408
+pymol_input_cd81 =
+select cd81bs, resi +420+421+424+427+430+432+436+437+438+440+441+442+443+523+526+527+529+530+535+540+549+550+613+614+616+617+618
+pymol_input_HC331 =
+select HC331, resi +413+418+420
+pymol_input_CBH23 =
+select CBH23, resi +494+508+509+537+539+549+552+554+564+611+614+644
+</pre><h2 id="13">Comparison of fitness costs associated with different regions targeted by HmAbs</h2><pre class="codeinput">compare_deltaE_antigenic_domains(deltaE_i)
+</pre><img vspace="5" hspace="5" src="main_13.png" style="width:560px;height:420px;" alt=""> <h2 id="14">Comparison of fitness costs associated with the binding residues of known HmAbs</h2><pre class="codeinput">compare_deltaE_HmAbs(deltaE_i)
+</pre><img vspace="5" hspace="5" src="main_14.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_15.png" style="width:560px;height:420px;" alt=""> <img vspace="5" hspace="5" src="main_16.png" style="width:560px;height:420px;" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%%
+% *Identifying immunologically-vulnerable regions of the HCV E2 
+% glycoprotein and broadly neutralizing antibodies that target them*
+
+%% Setting up paths (of functions and data files required) and necessary parameters
+clear all;close all;clc
+
+addpath data
+% addpath functions
+
+run startup.m
+
+set(0,'DefaultAxesFontName','Arial')
+set(0,'DefaultTextFontName','Arial')
+set(0,'DefaultAxesFontSize',10)
+set(0,'DefaultTextFontSize',10)
+
+run_scripts = 0;
+%1 = yes, run the scripts. Note that this would take very long time...
+%0 = no, use saved data.
+
+%% 1. Preprocessing of the PV sequence data downloaded from NCBI
+
+% HCV genotype 1a E2 sequences were downloaded from the Los Alamos National 
+% Laboratory (LANL) HCV sequence database (https://hcv.lanl.gov; 
+% accessed Sep. 25, 2017)
+% Header format: Name.PATid.Accession.Subtype.Country.SamplingYear
+
+inputfile = 'HCV_E2_aa_align_sequences_1909.fasta';
+[X,w] = preprocessing_data(inputfile);
+
+%% 2. Inferring the model representing the prevalence landscape of vp1 using ACE
+
+% Code for running MPF-BML is freely available at <https://github.com/raymondlouie/MPF-BML>. 
+
+%% 
+% MPF-BML input: MSA matrix "X" and weight vector "w".
+
+%% 
+% MPF-BML output: Maximum entropy model parameters (fields and couplings)
+
+load MPF_BML_output.mat
+
+msa_aa_ex = msa_bin;
+
+[~,L] = size(msa_aa);
+% L is the total number of residues in E2
+[~,L_ex] = size(msa_aa_ex);
+% L_ex is the length of the Potts binary extended MSA
+L_mut = length(ind_non_conserve);
+% L_mut is the number of non-conserve (mutating) residues in E2
+
+H = reshape(J_mat,L_ex,L_ex); 
+% Model-paramters matrix which consists of inferred fields on its diagonal
+% and inferred couplings on the upper triangular matrix.
+
+phi_curr = num_mutants_combine_array; 
+%Number of mutants at each residue
+
+mutant_order = amino_single_combine_array; 
+%Identity of mutants at each residue
+
+phi_cumulative(1) = phi_curr(1);
+for kk = 2:length(mutant_order)
+    phi_cumulative(kk) = sum(phi_curr(1:kk));
+end
+%Cumulative sum of the number of mutants at each residue
+
+
+% Generating samples from the inferred model using a Markov Chain Monte Carlo (MCMC) method
+
+if run_scripts
+    samples_MCMC = generate_samples_MCMC(H,msa_aa_ex,phi_curr,phi_cumulative,...
+        L_mut,L_ex,w);
+else
+    load samples_MCMC_E2_99900.mat
+end
+
+%% 3. Statistical validation of the inferred model 
+
+% Single mutant probability, double mutant probability, and distribution of
+% the number of mutations
+model_statistical_validation(msa_aa_ex,w,samples_MCMC,phi_curr,L_mut)
+
+% Triple mutant probability
+if run_scripts == 1
+    [p3_data, p3_sampler] = compute_triple_mutant_probability(msa_aa,...
+        phi_curr,mutant_order,ind_conserve,samples_MCMC,w);
+else
+    load three_point_correlations_E2 p3_data p3_sampler
+end
+plot_triple_mutant_probability(p3_data,p3_sampler)
+
+%% 4. Experimental and clinical validations
+
+%% 
+% In silico predicted energy vs in vitro replicative fitness measurements
+
+% Energies predicted using the inferred model which incorporates the
+% effects of mutations at individual residues as well as  interactions
+% between mutations at different residues
+
+method = 1;
+energy_vs_fitness(method, msa_aa_ex, msa_aa, phi_curr, mutant_order, ...
+    H, ind_non_conserve);
+
+% Energy predicted using the model which incorporates only the effects of
+% mutations at individual residues
+
+method = 2;
+energy_vs_fitness(method, msa_aa_ex, msa_aa, phi_curr, mutant_order, ...
+    H, ind_non_conserve);
+
+%% 
+% Comparison of fitness costs associated with known escape mutations and
+% the mutations at other residues
+
+% Computing deltaE_i first
+if run_scripts==1
+    deltaE_i = compute_deltaE(samples_MCMC,msa_aa,phi_curr,mutant_order,...
+        ind_non_conserve,ind_conserve,H);
+else
+    load data_fitnessCosts_E2_99900
+    deltaE_i = dE2;
+end
+
+compare_deltaE_known_escape_mutations(deltaE_i,L)
+
+%% 
+% Comparison of fitness costs associated with mutations at exposed residues
+% those at buried ones
+
+compare_deltaE_exposed_buried_residues(deltaE_i)
+
+%% 
+% Comparison of fitness costs associated with T cell epitopes associated
+% with spontaneous cleanrance
+
+compare_deltaE_Tcell_epitopes(deltaE_i,ind_non_conserve)
+
+%% Mapping of deltaE_i values on the available crystal structure of E2
+
+mapping_crystal_structure_pymol(dE2)
+% The above code generates the text file required in Pymol for creating the
+% heatmap. The code to run in Pymol is provided in "Pymol_code.docx" file.
+
+%% Comparison of fitness costs associated with different regions targeted by HmAbs
+
+compare_deltaE_antigenic_domains(deltaE_i)
+
+%% Comparison of fitness costs associated with the binding residues of known HmAbs
+
+compare_deltaE_HmAbs(deltaE_i)
+
+##### SOURCE END #####
+--></body></html>
