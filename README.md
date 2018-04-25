@@ -33,12 +33,12 @@ Ahmed A. Quadeer, Raymond H. Y. Louie, and Matthew R. McKay
 
 ## Usage
 1.  Open MATLAB
-2.  Run the script main.m 
+2.  Run the script ```main.m``` 
 
 
 To visualizing the step-by-step procedure and the corresponding output
 1. Download the html folder
-2. Open the "main.html" file in your browser
+2. Open the ```main.html``` file in your browser
 
 ## Troubleshooting
 For any questions or comments, please email at ahmedaq@gmail.com. 
