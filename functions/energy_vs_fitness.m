@@ -293,22 +293,13 @@ for i = 1:numSeqMsaToTest
     [EnergySeq3(i)] = calcSeqEnergy(out_seq_ex(i,:),H);
 end
 
-% FFU3 = fitness3([1:27 29 34 36 39 40 43 45:49 61:63 65])./fitness3(1); %greater than detection threshold
-% EnergySeq3 = EnergySeq3([1:27 29 34 36 39 40 43 45:49 61:63 65]);
-% 
-% FFU3 = fitness3([1 3 5 11 16 18:20 24 25 34 39 41 43 46 48 62:63])./fitness3(1); %significant (*) and greater than detection threshold
-EnergySeq3 = EnergySeq3([1 3 5 11 16 18:20 24 25 34 39 41 43 46 48 62:63]);
-EnergySeq3(8) = [];  %mutation A403 doesnt exist 
-% FFU3(8) = [];
 
-% figure;
-% plot([EnergySeq3-EnergySeq3(1)],FFU3,'o','MarkerFaceColor',blue,'MarkerEdgeColor',blue)
-% [r3,p3] = corr([EnergySeq3-EnergySeq3(1)].',FFU3.','type','spearman')
-% title(sprintf('Spearman r = %.3f, p = %.3e',r3,p3),'interpreter','tex')
 
 FFU3_norm = standardize_data(fitness3([1 3 5 11 16 18:20 24 25 34 39 41 43 46 48 62:63]));
 %significant (*) and greater than detection threshold
 FFU3_norm(8) = [];
+EnergySeq3 = EnergySeq3([1 3 5 11 16 18:20 24 25 34 39 41 43 46 48 62:63]); 
+EnergySeq3(8) = [];  %mutation A403 doesnt exist 
 Energy3_norm = standardize_data(EnergySeq3);
 
 % figure;
@@ -509,11 +500,6 @@ end
 fitness7 = [100 21.68674699	9.036144578	11.44578313	5.421686747	61.44578313	6.024096386	94.57831325	2.409638554	3.012048193	33.73493976	85.54216867	1.204819277	88.55421687	10.84337349 4.81927710843373];
 
 FFU7 = fitness7./fitness7(1);
-
-% figure;
-% plot([EnergySeq7-EnergySeq7(1)],FFU7,'o','MarkerFaceColor',blue,'MarkerEdgeColor',blue)
-% [r7,p7] = corr([EnergySeq7-EnergySeq7(1)].',FFU7.','type','spearman')
-% title(sprintf('Spearman r = %.3f, p = %.3e',r7,p7),'interpreter','tex')
 
 FFU7_norm = standardize_data(fitness7);
 Energy7_norm = standardize_data(EnergySeq7);
@@ -902,7 +888,7 @@ w10 = length(FFU10_approx_norm)/total_length;
 rho_weighted_average = r1*w1+r2*w2+r3*w3+r6*w6+r7*w7+r8_approx*w8+r9*w9+r2b_approx*w2b+r10_approx*w10;
 
 % title(sprintf('r = %0.3f, p = %0.3e',rho,pval))
-text(-3,-2,sprintf('$$\\bar{r} = %.3f$$',rho_weighted_average),'interpreter','latex','FontSize',16)
+text(-3,-2,sprintf('$$\\bar{r} = %.2f$$',rho_weighted_average),'interpreter','latex','FontSize',16)
 
 % P = polyfit([Energy1 Energy2 Energy2b Energy3]',[FFU1 FFU2 FFU2b FFU3]',1);
 P = polyfit([Energy1_norm Energy2_norm Energy2b_approx_norm Energy3_norm Energy6_norm Energy7_norm Energy8_approx_norm Energy9_norm Energy10_approx_norm]',...

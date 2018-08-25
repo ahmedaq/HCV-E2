@@ -41,7 +41,6 @@ CD8_ep{15} = [712:726]; %A*2402
 CD8_ep{16} = [723:734]; %A2
 
 
-figure;
 G = [];
 data = [];
 data_cons = [];
@@ -55,8 +54,8 @@ set(0,'DefaultTextFontSize',10)
 
 % boxplot
 
-eps_control = [CD8_ep{3:5}];
-eps_rest = [CD8_ep{[1:2 6:16]}];
+eps_control = [CD8_ep{[1 3:5]}];
+eps_rest = [CD8_ep{[2 6:16]}];
 
 G = [zeros(1,length(eps_control)) ...
     ones(1,length(eps_rest))];
@@ -98,5 +97,5 @@ figure_boxplot(data,G,...
     savefig,savefig_name,fig_width_cm,fig_height_cm);
 
 
-p_diff_dist_control_rest = ranksum(dE2(eps_control-383),dE2(eps_rest-383));
+p_diff_dist_control_rest = ranksum(dE2(eps_control-383),dE2(eps_rest-383),'tail','right');
 fprintf('\nP = %.1e, Mann-Whitney test\n',p_diff_dist_control_rest)

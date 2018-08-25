@@ -1,4 +1,4 @@
-function model_statistical_validation(msa_aa_ex,weight,samples_MCMC_double,phi_curr,protein_length_aa)
+function [freqCountNumMutPerSeq_actualMSA,freqCountNumMutPerSeq_MCMC] = model_statistical_validation(msa_aa_ex,weight,samples_MCMC_double,phi_curr,protein_length_aa)
   
 % Code for statistical validation of the model
 % 

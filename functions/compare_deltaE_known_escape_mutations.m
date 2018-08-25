@@ -77,6 +77,6 @@ figure_boxplot(data,G,...
     ylim_min,ylim_max,...
     savefig,savefig_name,fig_width_cm,fig_height_cm);
 
-P = ranksum(dE2(setdiff(1:L,polymorphisms_associated_with_neutralization_resistance-383)),dE2(polymorphisms_associated_with_neutralization_resistance-383));
+P = ranksum(dE2(setdiff(1:L,polymorphisms_associated_with_neutralization_resistance-383)),dE2(polymorphisms_associated_with_neutralization_resistance-383),'tail','right');
 fprintf('\nP = %.1e, Mann-Whitney test\n',P)
 % [h,p] = kstest2(dE2(setdiff(1:L,polymorphisms_associated_with_neutralization_resistance-383)),dE2(polymorphisms_associated_with_neutralization_resistance-383),'tail','smaller')

@@ -44,7 +44,7 @@ rest = setdiff(res_nos2,buried_residues);
 dE2_4mwf_buried_residues_get_area = dE2(buried_residues - 383);
 dE2_4mwf_surface_residues_get_area = dE2(rest - 383);
 
-p_mannwhitney_surface_buried = ranksum(dE2_4mwf_buried_residues_get_area,dE2_4mwf_surface_residues_get_area);
+p_mannwhitney_surface_buried = ranksum(dE2_4mwf_buried_residues_get_area,dE2_4mwf_surface_residues_get_area,'tail','right');
 fprintf('\nP = %.1e, Mann-Whitney test\n',p_mannwhitney_surface_buried)
 
 
