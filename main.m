@@ -29,7 +29,7 @@ run_scripts = 0;
 inputfile = 'HCV_E2_aa_align_sequences_1909.fasta';
 [X,w] = preprocessing_data(inputfile);
 
-%% 2. Inferring the model representing the prevalence landscape of vp1 using ACE
+%% 2. Infe2rring the model representing the prevalence landscape of vp1 using ACE
 
 % Code for running MPF-BML is freely available at <https://github.com/raymondlouie/MPF-BML>. 
 
@@ -121,11 +121,18 @@ if run_scripts==1
     deltaE_i = compute_deltaE(samples_MCMC,msa_aa,phi_curr,mutant_order,...
         ind_non_conserve,ind_conserve,H);
 else
-    load data_fitnessCosts_E2_99900 dE2
-    deltaE_i = dE2;
+    load data_fitnessCosts_E2_99900.mat dE2 
+    deltaE_i = dE2;      
 end
 
 compare_deltaE_known_escape_mutations(deltaE_i,L)
+
+%%
+% Predicting the easiest compensatory pathway in the H77 background with
+% N417S mutation
+
+escape_mutation_N417S_Q444R(msa_aa, phi_curr, mutant_order, ...
+    H, ind_non_conserve)
 
 %% 
 % Comparison of fitness costs associated with mutations at exposed residues
