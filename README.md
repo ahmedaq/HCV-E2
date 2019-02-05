@@ -27,9 +27,11 @@ Ahmed A. Quadeer, Raymond H. Y. Louie, and Matthew R. McKay
  
 2.  For inferring maximum-entropy model parameters:
     * Minimum probability flow method (MPF-BML), available at https://github.com/raymondlouie/MPF-BML 
+    
+3.  For computing the mean escape time metric using the available code, extensive computations are required. The reported escape times in the manuscript were computed using ~1 million core-hours on a supercomputer with Intel(R) Xeon(R) CPU E5-2692 v2 @ 2.20GHz.
  
-3.  For mapping fitness costs on the available E2 crystal structure
-    * Pymol, available at https://pymol.org/ 
+4.  For mapping fitness costs on the available E2 crystal structure
+    * Pymol, available at https://pymol.org/     
 
 ## Usage
 1.  Open MATLAB
