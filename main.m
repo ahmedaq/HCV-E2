@@ -19,7 +19,7 @@ run_scripts = 0;
 %1 = yes, run the scripts. Note that this would take very long time...
 %0 = no, use saved data.
 
-%% 1. Preprocessing of the PV sequence data downloaded from NCBI
+%% 1. Preprocessing of the E2 sequence data downloaded from NCBI
 
 % HCV genotype 1a E2 sequences were downloaded from the Los Alamos National 
 % Laboratory (LANL) HCV sequence database (https://hcv.lanl.gov; 
@@ -29,7 +29,7 @@ run_scripts = 0;
 inputfile = 'HCV_E2_aa_align_sequences_1909.fasta';
 [X,w] = preprocessing_data(inputfile);
 
-%% 2. Infe2rring the model representing the prevalence landscape of vp1 using ACE
+%% 2. Inferring the model representing the prevalence landscape of E2 using MPF-BML
 
 % Code for running MPF-BML is freely available at <https://github.com/raymondlouie/MPF-BML>. 
 
@@ -80,7 +80,7 @@ end
 
 % Single mutant probability, double mutant probability, and distribution of
 % the number of mutations
-model_statistical_validation(msa_aa_ex,w,samples_MCMC,phi_curr,L_mut)
+model_statistical_validation(msa_aa_ex,w,samples_MCMC,phi_curr,L_mut);
 
 % Triple mutant probability
 if run_scripts == 1
@@ -92,7 +92,7 @@ else
 end
 plot_triple_mutant_probability(p3_data,p3_sampler)
 
-%% 4. Experimental and clinical validations
+%% 4. Biological validation of the inferred fitness landscape
 
 %% 
 % In silico predicted energy vs in vitro replicative fitness measurements
@@ -113,49 +113,60 @@ energy_vs_fitness(method, msa_aa_ex, msa_aa, phi_curr, mutant_order, ...
     H, ind_non_conserve);
 
 %% 
-% Comparison of fitness costs associated with known escape mutations and
-% the mutations at other residues
-
-% Computing deltaE_i first
-if run_scripts==1
-    deltaE_i = compute_deltaE(samples_MCMC,msa_aa,phi_curr,mutant_order,...
-        ind_non_conserve,ind_conserve,H);
-else
-    load data_fitnessCosts_E2_99900.mat dE2 
-    deltaE_i = dE2;      
-end
-
-compare_deltaE_known_escape_mutations(deltaE_i,L)
-
-%%
 % Predicting the easiest compensatory pathway in the H77 background with
 % N417S mutation
 
 escape_mutation_N417S_Q444R(msa_aa, phi_curr, mutant_order, ...
     H, ind_non_conserve)
 
+%% 5. Biological validation of the evolutionary "escape time" metric and design of a binary classifier 
+% Comparison of escape times associated with known escape mutations and
+% the mutations at other residues
+
+% Computing ecscape times (t_e^i) requires to run evolutionay simulation
+% model, which is computationally quite complicated
+% We ran the code "WF_E2_script_Ng_b_beta.m" for each residue on a 
+% supercomputer using 100 nodes, each comprising 24 cores, 
+% and calculated the escape time score for each residue.
+% We also computed AUC and a escape time cut-off based on the escape time
+% scores predicted for the experimentally/clinically observed escape
+% mutations.
+
+% First, we load the calculated escape time scores 
+
+load escape_time_E2.mat mean_escape_time
+
+compare_deltaE_known_escape_mutations(mean_escape_time,L)
+
+
 %% 
-% Comparison of fitness costs associated with mutations at exposed residues
+% Comparison of escape times associated with mutations at exposed residues
 % those at buried ones
 
-compare_deltaE_exposed_buried_residues(deltaE_i)
+compare_deltaE_exposed_buried_residues(mean_escape_time)
 
 %% 
-% Comparison of fitness costs associated with T cell epitopes associated
+% Comparison of escape times associated with T cell epitopes associated
 % with spontaneous cleanrance
 
-compare_deltaE_Tcell_epitopes(deltaE_i,ind_non_conserve)
+compare_deltaE_Tcell_epitopes(mean_escape_time,ind_non_conserve)
 
-%% Mapping of fitness costs on the available crystal structure of E2
+%% 6. Mapping of escape times on the available crystal structure of E2
 
-mapping_crystal_structure_pymol(dE2)
+mapping_crystal_structure_pymol(mean_escape_time)
 % The above code generates the text file required in Pymol for creating the
 % heatmap. The code to run in Pymol is provided in "Pymol_code.docx" file.
 
-%% Comparison of fitness costs associated with different regions targeted by HmAbs
+%% 7. Comparison of escape times associated with different regions targeted by HmAbs
 
-compare_deltaE_antigenic_domains(deltaE_i)
+compare_deltaE_antigenic_domains(mean_escape_time)
 
-%% Comparison of fitness costs associated with the binding residues of known HmAbs
+%% 8. Comparison of escape times associated with the binding residues of known HmAbs (RB<=20)
 
-compare_deltaE_HmAbs(deltaE_i)
+compare_deltaE_HmAbs(mean_escape_time)
+
+%% 9. Comparison of escape times associated with the binding residues of known HmAbs (RB<=40)
+compare_deltaE_HmAbs_RB40(mean_escape_time)
+
+%% 10. Comparison of escape times associated with the binding residues of known HmAbs (selective alanine scanning)
+compare_deltaE_HmAbs_selective(mean_escape_time)
