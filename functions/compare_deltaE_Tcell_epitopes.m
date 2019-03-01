@@ -9,13 +9,6 @@ function compare_deltaE_Tcell_epitopes(dE2,ind_non_conserve)
 %%
 run startup.m
 
-%% NW9
-gray = [0.6 0.6 0.6];
-NW9 = [541:550];
-figure_epitopes2(-dE2,NW9,ind_non_conserve,'',gray,'Epitope associated with spontaneous clearance',0)
-ylim([0 14])
-post_proc_fig_box
-
 %% Analysis of all CD8+ epitopes 
 
 clear CD8_ep
@@ -23,14 +16,13 @@ clear CD8_ep
 CD8_ep{1} = [489:496]; %B51
 CD8_ep{2} = [530:539]; %B60
 CD8_ep{3} = [541:550]; %B57 clearance
-CD8_ep{4} = [632:641]; %A3 clearance
+CD8_ep{4} = [632:640]; %A3 clearance
 CD8_ep{5} = [630:639]; %A3 clearance
 
 CD8_ep{6} = [401:411]; %A2
 CD8_ep{7} = [459:469]; %B53
 
 CD8_ep{8} = [497:507]; %B35 [Ward2002]
-
 CD8_ep{9} = [569:578]; %B50
 CD8_ep{10} = [610:618]; %cw7
 CD8_ep{11} = [613:622]; %cw7, A2
@@ -39,6 +31,7 @@ CD8_ep{13} = [654:662]; %B60
 CD8_ep{14} = [686:694]; %A2
 CD8_ep{15} = [712:726]; %A*2402
 CD8_ep{16} = [723:734]; %A2
+
 
 
 G = [];
@@ -54,8 +47,8 @@ set(0,'DefaultTextFontSize',10)
 
 % boxplot
 
-eps_control = [CD8_ep{[1 3:5]}];
-eps_rest = [CD8_ep{[2 6:16]}];
+eps_control = unique([CD8_ep{[1 3:5]}]);
+eps_rest = unique([CD8_ep{[2 6:16]}]);
 
 G = [zeros(1,length(eps_control)) ...
     ones(1,length(eps_rest))];
@@ -75,12 +68,12 @@ outlier_marker_edgeWidth = 0.1;
 outlier_marker_edgeColor = 'w';
 outlier_jitter_value = 0.75;
 label_xaxis_data = {'Spontaneous clearance','Remaining'};
-text_ylabel = '\DeltaE_i';
+text_ylabel = 'Escape time';
 text_xlabel = '';
 text_title = '';%'E2-escape mutations [Keck2009],[Morin2012],[Bailey2015]';
 label_orientation_choice = 'horizontal'; %'horizontal'
-ylim_min = -1;
-ylim_max = 14;
+ylim_min = 0;
+ylim_max = 1000;
 savefig = 0;
 savefig_name = 'CTL_control_rest';
 fig_width_cm = 4;

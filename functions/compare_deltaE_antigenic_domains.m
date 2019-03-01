@@ -1,10 +1,10 @@
-function compare_deltaE_antigenic_domains(dE2)
+function compare_deltaE_antigenic_domains(mean_escape_time)
 
 % Code for comparing fitness costs associated with regions targeted by
 % HmAbs
-% 
-% Written by: Ahmed Abdul Quadeer 
-% Last updated: 2018-04-07
+%
+% Written by: Ahmed Abdul Quadeer
+% Last updated: 2018-12-21
 
 %%
 run startup.m
@@ -21,66 +21,71 @@ antigenic_region{2} = cd81_binding_Pierce2016; %cd81bs
 %based on [Pierce2016], Table 2 caption [previous reported epitopes]
 antigenic_region{3} = [626:632]; %domainA
 antigenic_region{4} = [425:428 436:438 529 530 535];%%domainB
-antigenic_region{5} = [542 544 545 549 561 592 593 598 631 633]; %domainC 
+antigenic_region{5} = [542 544 545 549 561 592 593 598 631 633]; %domainC
 antigenic_region{6} = [441:443 502 616]; %domainD
 antigenic_region{7} = 412:423; %domainE
 
-%
-G = [];
-data = [];
-
-for kk = 1:length(antigenic_region)
-    G = [G kk*ones(1,length(antigenic_region{kk}))];    
-    data = [data dE2(antigenic_region{kk}-383)];
-end
+%% Bar plot -- minimume escape time
 
 set(0,'DefaultAxesFontName','Arial')
 set(0,'DefaultTextFontName','Arial')
 set(0,'DefaultAxesFontSize',10)
 set(0,'DefaultTextFontSize',10)
 
-black = [0 0 0];
+for kk = 1:length(antigenic_region)
+    data_mean{kk} = mean_escape_time(antigenic_region{kk}-383);
+    min_data_mean(kk) = min(data_mean{kk});
+end
 
-box_lineWidth = 0.5;
-box_widths_value = 0.2;
-box_color = [black; darkgray; color_scheme_npg(1,:); color_scheme_npg(2,:); ...
-    color_scheme_npg(3,:); color_scheme_npg(4,:); color_scheme_npg(5,:)];
-% box_color = [black; gray; green; purple; orange; yellow; brown];
-box_color_transparency = 0.6; %faceAlpha
-median_lineWidth = 1;
-median_color = 'k';
-whisker_value = 1.5;
-outlier_marker = 'o';
-outlier_markerSize = 7;
-outlier_marker_edgeWidth = 0.1;
-outlier_marker_edgeColor = 'k';
-outlier_jitter_value = 0.5;
-label_xaxis_data = {'HVR1','CD81bs','Domain A','Domain B','Domain C','Domain D','Domain E'};
-text_ylabel = 'Fitness cost, \DeltaE_i';
-text_xlabel = '';%Regions of interest in E2';
-text_title = '';%'Important E2 regions';
-label_orientation_choice = 'horizontal'; %'inline'
-ylim_min = -1;
-ylim_max = 13;
-savefig = 0;
-savefig_name = 'important_regions_v2';
-fig_width_cm = 9;
-fig_height_cm = 3;
+
+ylim_min = 0;
+ylim_max = 300;
 
 figure
-xbars = [6.5 7.5];
-patch([xbars(1) xbars(1), xbars(2) xbars(2)], [ylim_min+.05 ylim_max ylim_max ylim_min+.05], [0.85 0.85 0.85], ...
-    'EdgeColor','w','LineWidth',0.1)
+subplot(2,1,1)
 hold on
-xbars = [4.5 5.5];
-patch([xbars(1) xbars(1), xbars(2) xbars(2)], [ylim_min+.05 ylim_max ylim_max ylim_min+.05], [0.85 0.85 0.85], ...
+xbars = [6.5 7.5];
+patch([xbars(1) xbars(1), xbars(2) xbars(2)], [ylim_min+1 ylim_max ylim_max ylim_min+1], [0.85 0.85 0.85], ...
     'EdgeColor','w','LineWidth',0.1)
 
-figure_boxplot(data,G,...
-    box_lineWidth,box_widths_value,box_color,box_color_transparency,...
-    median_lineWidth,median_color,...
-    whisker_value,...
-    outlier_marker,outlier_markerSize,outlier_marker_edgeWidth,outlier_marker_edgeColor,outlier_jitter_value,...
-    label_xaxis_data,text_ylabel,text_xlabel,text_title,label_orientation_choice,...
-    ylim_min,ylim_max,...
-    savefig,savefig_name,fig_width_cm,fig_height_cm);
+xbars = [4.5 5.5];
+patch([xbars(1) xbars(1), xbars(2) xbars(2)], [ylim_min+1 ylim_max ylim_max ylim_min+1], [0.85 0.85 0.85], ...
+    'EdgeColor','w','LineWidth',0.1)
+
+bar(1:7, [zeros(1,0) min_data_mean(1) zeros(1,6)], 0.4, 'FaceColor','k','FaceAlpha',0.7);
+bar(1:7, [zeros(1,1) min_data_mean(2) zeros(1,5)], 0.4, 'FaceColor',darkgray,'FaceAlpha',0.7);
+bar(1:7, [zeros(1,2) min_data_mean(3) zeros(1,4)], 0.4, 'FaceColor',color_scheme_npg(1,:),'FaceAlpha',0.7);
+bar(1:7, [zeros(1,3) min_data_mean(4) zeros(1,3)], 0.4, 'FaceColor',color_scheme_npg(2,:),'FaceAlpha',0.7);
+bar(1:7, [zeros(1,4) min_data_mean(5) zeros(1,2)], 0.4, 'FaceColor',color_scheme_npg(3,:),'FaceAlpha',0.7);
+bar(1:7, [zeros(1,5) min_data_mean(6) zeros(1,1)], 0.4, 'FaceColor',color_scheme_npg(4,:),'FaceAlpha',0.7);
+bar(1:7, [zeros(1,6) min_data_mean(7) zeros(1,0)], 0.4, 'FaceColor',color_scheme_npg(5,:),'FaceAlpha',0.7);
+
+
+set(gca,'XTickLabel',{'HVR1','CD81bs','Domain A','Domain B','Domain C','Domain D','Domain E'})
+xtickangle(30)
+ylabel('Minimum escape time')
+xlim([0.5 7.5])
+post_proc_fig
+
+%% Heatmap -- for calculating n_e^tau
+
+thresh_range = 80:20:140;
+for mm = 1:length(thresh_range)
+    for kk = 1:length(data_mean)
+        no_of_sites_less_100(kk,mm) = sum(data_mean{kk}<=thresh_range(mm));
+    end
+end
+
+labels_cell{2} = {'100','140','180','220'};
+labels_cell{1} = {'HVR1','CD81bs','Domain A','Domain B','Domain C','Domain D','Domain E'};
+
+% figure_heatmap(no_of_sites_less_100_HmAb20.','BuPu','',{'','Escape time'},[0 8],labels_cell)
+
+subplot(2,1,2)
+
+heatmap(labels_cell{1},labels_cell{2},no_of_sites_less_100.');
+set(gca,'Colormap',color_scheme_BuPu,'ColorLimits',[0 22],'GridVisible','off','FontSize',10,'ColorbarVisible','off');
+% h = set(gca,'Colormap',color_scheme,'ColorLimits',limits_data);
+% xlabel(text_labels{1})
+ylabel('Escape time threshold, tau')
+% colorbar('Location','north')

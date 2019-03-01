@@ -39,7 +39,7 @@ thresh_RASA = 0.2;
 
 buried_residues = res_nos2(find(RASA_4mwf_Miller1987<=thresh_RASA));
 
-rest = setdiff(res_nos2,buried_residues);
+rest = [384:410 setdiff(res_nos2,buried_residues)]; %including HVR1 too
 
 dE2_4mwf_buried_residues_get_area = dE2(buried_residues - 383);
 dE2_4mwf_surface_residues_get_area = dE2(rest - 383);
@@ -76,12 +76,12 @@ outlier_marker_edgeWidth = 0.1;
 outlier_marker_edgeColor = 'w';
 outlier_jitter_value = 0;
 label_xaxis_data = {'Buried','Exposed'};
-text_ylabel = 'Fitness cost, \DeltaE_i';
+text_ylabel = 'Escape time';
 text_xlabel = '';
 text_title = '';%'E2 surface and buried residues';
 label_orientation_choice = 'horizontal'; %'horizontal'
-ylim_min = -1;
-ylim_max = 14;
+ylim_min = 0;
+ylim_max = 1000;
 savefig = 0;
 savefig_name = 'surface_buried_residues';
 fig_width_cm = 4;

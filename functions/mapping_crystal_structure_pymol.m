@@ -1,9 +1,9 @@
-function mapping_crystal_structure_pymol(dE2)
+function mapping_crystal_structure_pymol(mean_escape_time)
 
 % Code for mapping fitness costs on E2 crystal structure
 % 
 % Written by: Ahmed Abdul Quadeer 
-% Last updated: 2018-04-07
+% Last updated: 2018-12-21
 
 load res_nos_E2_4mwf.mat %file containing the positions of E2 for which structure is available. obtained from 4mwf structure code in polio folder
 load order_E2_4mwf.mat %file containing the numbering of all atoms (not just carbon alpha)
@@ -12,10 +12,10 @@ load order_E2_4mwf.mat %file containing the numbering of all atoms (not just car
 %% making a vector of length(order) for assigning dE values to all atoms of residues
 
 for kk = 1:length(order)
-    dE2_crystal_structure_4mwf_allatoms(kk) = dE2(order(kk)-383);
+    escape_time_crystal_structure_4mwf_allatoms(kk) = mean_escape_time(order(kk)-383);
 end
-delete dE2_crystal_structure_4mwf_allatoms.txt
-dlmwrite('dE2_crystal_structure_4mwf_allatoms.txt',dE2_crystal_structure_4mwf_allatoms.')
+delete crystal_structure_4mwf_allatoms_mean_escape_time.txt
+dlmwrite('crystal_structure_4mwf_allatoms_mean_escape_time.txt',escape_time_crystal_structure_4mwf_allatoms.')
 
 %% Defining regions for pymol 
 
