@@ -35,10 +35,11 @@ Ahmed A. Quadeer, Raymond H. Y. Louie, and Matthew R. McKay
 
 ## Usage
 1.  Open MATLAB
-2.  Run the script ```main.m``` 
+2.  Run the script ```main.m```
+3.  By default, all data files are provided to reproduce the results in the paper
 
 
-To visualizing the step-by-step procedure and the corresponding output
+For visualizing the step-by-step procedure and the corresponding output
 1. Download the html folder
 2. Open the ```main.html``` file in your browser
 
